@@ -1,0 +1,5 @@
+@use '../colors';
+
+@mixin dark-theme {
+  --base: #{colors.$white};
+}

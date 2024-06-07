@@ -1,0 +1,26 @@
+@use 'src/styles/themes/light';
+@use 'src/styles/themes/dark';
+@use 'src/styles/theme';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  @include light.light-theme;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    @include light.light-theme;
+  }
+}
+
+html[data-theme='light'] {
+  @include light.light-theme;
+}
+
+html[data-theme='dark'] {
+  @include dark.dark-theme;
+}
+
