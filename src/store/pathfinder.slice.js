@@ -50,7 +50,19 @@ export const pathfinderSlice = createSlice({
     },
     updateSingleCell: (state, action) => {
       const payload = action.payload
-      console.log('payload: ', payload)
+      const { cellType, row, col } = payload;
+
+      if(cellType === CELL_TYPE.SOURCE || cellType === CELL_TYPE.DEST) {
+        const cType = cellType === CELL_TYPE.SOURCE ? 'source' : 'dest';
+        const { row: prevRow, col: prevCol } = state[cType];
+
+        state.grid[prevRow][prevCol] = CELL_TYPE.EMPTY;
+
+        state[cType] = {
+          row,
+          col,
+        }
+      }
       state.grid[payload.row][payload.col] = payload.cellType;
     }
 

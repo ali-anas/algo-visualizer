@@ -14,24 +14,42 @@ const Grid = () => {
   const dispatch = useDispatch();
   const isMouseDown = useRef(false);
   const gridRef = useRef(null);
+  const draggableCellRef = useRef(null);
   const { grid } = pathfinder;
-  console.log('pathfinder: ', pathfinder);
+
+  useEffect(() => {
+    if(!isMouseDown.current) {
+      draggableCellRef.current = null;
+    }
+  }, [isMouseDown.current])
 
   useEffect(() => {
     if(!isValidCell) {
       return;
     }
+
+    if (draggableCellRef.current) {
+      if(![CELL_TYPE.SOURCE, CELL_TYPE.DEST, CELL_TYPE.WALL].includes(selectedCell.cellType)) {
+        dispatch(updateSingleCell({ ...selectedCell, cellType: draggableCellRef.current.cellType }));
+      }
+      return;
+    }
+
+    if ([CELL_TYPE.SOURCE, CELL_TYPE.DEST].includes(selectedCell.cellType)) {
+      draggableCellRef.current = selectedCell;
+      return;
+    }
+
     if(![CELL_TYPE.SOURCE, CELL_TYPE.DEST].includes(selectedCell.cellType)) {
-      dispatch(updateSingleCell({ ...selectedCell, cellType: CELL_TYPE.WALL }));
+      dispatch(updateSingleCell({ ...selectedCell, cellType: selectedCell.cellType === CELL_TYPE.WALL ? CELL_TYPE.EMPTY : CELL_TYPE.WALL }));
     }
 
   }, [selectedCell, isValidCell]);
  
   const onMouseUp = (e) => {
     e.stopPropagation();
-    if (isMouseDown.current) {
-      isMouseDown.current = false;
-    }
+    isMouseDown.current = false;
+    setElement(null);
   }
 
   // onMouseDown
