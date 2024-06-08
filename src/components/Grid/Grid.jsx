@@ -5,7 +5,7 @@ import { checkCellValid } from '../../helpers/pathfinder';
 
 
 import classes from './grid.module.scss';
-import { CELL_TYPE } from '../../constants';
+import { CELL_TYPE, Status } from '../../constants';
 
 const Grid = () => {
   const pathfinder = useSelector(state => state.pathfinder);
@@ -15,7 +15,7 @@ const Grid = () => {
   const isMouseDown = useRef(false);
   const gridRef = useRef(null);
   const draggableCellRef = useRef(null);
-  const { grid } = pathfinder;
+  const { grid, status } = pathfinder;
 
   useEffect(() => {
     if(!isMouseDown.current) {
@@ -86,8 +86,6 @@ const Grid = () => {
     }
   }, [gridRef]);
 
-  console.log('grid: ', grid);
-
   const gridStyle = { display: 'grid', gridTemplateColumns: `repeat(${grid[0].length}, 25px)`, gridTemplateRows: `repeat(${grid.length}, 25px)` }
   return (
     <div style={gridStyle} className={classes.grid} ref={gridRef}>
@@ -100,6 +98,7 @@ const Grid = () => {
               data-col={colIndex}
               data-row={rowIndex}
               data-cell-type={cellType}
+              disabled={status === Status.Searching}
             ></button>
           )
         }

@@ -16,12 +16,12 @@ export function highlightPath(grid, parents, delayDuration) {
     const state = getState().pathfinder;
     // highlight the final path
     if(parents) {
-      const pathLength = await dispatch(tracePath({
+      const pathLength = await tracePath({
         parents,
         sourceNode: state.source,
         destNode: state.dest,
         updateCell,
-      }))
+      })
     } else {
       console.log("path not found");
     }

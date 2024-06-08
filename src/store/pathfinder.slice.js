@@ -27,9 +27,9 @@ export const pathfinderSlice = createSlice({
 
       for(const row of clonedGrid) {
         for(let j = 0; j < row.length; j++) {
-          const cell = element[j];
+          const cell = row[j];
           if(cell === CELL_TYPE.VISITED || cell === CELL_TYPE.PATH) {
-            element[j] = CELL_TYPE.EMPTY;
+            row[j] = CELL_TYPE.EMPTY;
           }
         }
       }
