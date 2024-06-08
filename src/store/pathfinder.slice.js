@@ -64,11 +64,14 @@ export const pathfinderSlice = createSlice({
         }
       }
       state.grid[payload.row][payload.col] = payload.cellType;
+    },
+    setGrid: (state, action) => {
+      state.grid = action.payload.grid;
     }
 
   },
 });
 
-export const { setStatus, clearGrid, updateCells, updateSingleCell } = pathfinderSlice.actions;
+export const { setStatus, clearGrid, updateCells, updateSingleCell, setGrid } = pathfinderSlice.actions;
 
 export default pathfinderSlice.reducer;

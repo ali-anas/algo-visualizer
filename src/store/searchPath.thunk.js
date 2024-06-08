@@ -10,8 +10,6 @@ export function searchPath(algo, delayDuration) {
     * @param val - processed node
     */
     async function updateUI(grid, cells, cellType) {
-      const gridState = getState().pathfinder.grid;
-
       if(!Array.isArray(cells)) {
         cells = [cells];
       }

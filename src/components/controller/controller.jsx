@@ -1,18 +1,21 @@
 import React from 'react'
 import { AlgorithmsMap } from '../../lib/algorithms'
 import { useSelector, useDispatch } from 'react-redux'
-import { clearGrid, setStatus } from '../../store/pathfinder.slice'
+import { clearGrid, setStatus, setGrid } from '../../store/pathfinder.slice'
 import { searchPath } from '../../store/searchPath.thunk'
 import { Status } from '../../constants'
 import { highlightPath } from '../../store/highlight.thunk'
 import classes from './controller.module.scss';
+import { useEffect } from 'react'
 
 
 const Controller = () => {
   const dispatch = useDispatch();
+  const pathfinder = useSelector(state => state.pathfinder);
   const status = useSelector(state => state.pathfinder.status);
+  const { source, dest } = pathfinder;
 
-  async function executeSearch(algo) {
+  async function executeSearch(algo, speed) {
     if(status === Status.Complete) {
       // clear the previous grid
       dispatch(clearGrid());
@@ -24,10 +27,9 @@ const Controller = () => {
 
     try {
       dispatch(setStatus(Status.Searching));
-      // TODO: implement searchPath, highlightPath
-      const { parents, grid } = await dispatch(searchPath(algo, 1));
-      await dispatch(highlightPath(grid, parents, 1))
-      // dispatch(setGrid({ grid: grid}))
+      const { parents, grid } = await dispatch(searchPath(algo, speed));
+      await dispatch(highlightPath(grid, parents, speed))
+      dispatch(setGrid({ grid }))
       dispatch(setStatus(Status.Complete))
     } catch(err) {
       // search is cancelled
@@ -35,12 +37,18 @@ const Controller = () => {
   }
 
   async function handleVisualize() {
-    await executeSearch(AlgorithmsMap['bfs'].fn)
+    await executeSearch(AlgorithmsMap['bfs'].fn, 1)
   }
 
   async function handleClearGrid() {
     dispatch(clearGrid());
   }
+
+  useEffect(() => {
+    if(status === Status.Complete) {
+      executeSearch(AlgorithmsMap['bfs'].fn, 0)
+    }
+  }, [source, dest])
 
   console.log("status: " + status);
 
