@@ -1,3 +1,23 @@
 .controller {
-  height: 170px;
+  height: auto;
+  margin: 8px 25px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.algoSelector {
+  padding: 8px 12px;
+  font-size: 16px;
+
+  option {
+    padding: 8px 12px;
+  }
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  button {
+    margin-right: 16px;
+  }
 }
