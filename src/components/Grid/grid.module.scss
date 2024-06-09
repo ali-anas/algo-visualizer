@@ -11,18 +11,18 @@
   }
 
   .type-1 {
-    background-color: green;
+    background-color: var(--source);
     border-color: var(--base);
   }
 
   .type-2 {
-    background-color: red;
+    background-color: var(--dest);
     border-color: var(--base);
   }
 
   .type-3 {
-    background-color: black;
-    border-color: black;
+    background-color: var(--wall);
+    border-color: var(--wall);
   }
 
   .type-4 {
@@ -62,7 +62,7 @@
   
     100% {
       transform: scale(1);
-      background-color: rgba(0, 190, 218, 0.75);
+      background-color: var(--visited);
     }
   }
 }

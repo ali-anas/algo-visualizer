@@ -57,9 +57,6 @@ const Controller = () => {
     await executeSearch(AlgorithmsMap[algo].fn, 1);
   }
 
-  console.log("status: " + status);
-  console.log("selected Algo: " + selectedAlgo);
-
   return (
     <section className={classes.controller}>
       <div className={classes.controls}>
@@ -68,13 +65,13 @@ const Controller = () => {
           disabled={status === Status.Searching || !selectedAlgo}
           data-tooltip="Play"
         >
-          <Play stroke={status === Status.Searching || !selectedAlgo ? "#949494" : "#111111"}/>
+          <Play size={20} stroke={status === Status.Searching || !selectedAlgo ? "#949494" : "#111111"}/>
         </button>
         <button
           onClick={handleClearGrid}
           disabled={status === Status.Searching}
           data-tooltip="Clear">
-          <Trash stroke={status === Status.Searching ? "#949494" : "#111111"}/>
+          <Trash size={20} stroke={status === Status.Searching ? "#949494" : "#111111"}/>
         </button>
       </div>
       <select className={classes.algoSelector} value={selectedAlgo} onChange={handleAlgoSelection} disabled={status === Status.Searching}>

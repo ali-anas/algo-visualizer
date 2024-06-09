@@ -2,4 +2,10 @@
 
 @mixin dark-theme {
   --base: #{colors.$white};
+  --source: #{colors.$green1};
+  --dest: #{colors.$red1};
+  --wall: #{colors.$black};
+  --empty: #{colors.$white};
+  --visited: #{colors.$visited};
+  --path: #{colors.$yellow1};
 }
