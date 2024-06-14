@@ -74,7 +74,7 @@ const Controller = () => {
           <Trash size={20} stroke={status === Status.Searching ? "#949494" : "#111111"}/>
         </button>
       </div>
-      <select className={classes.algoSelector} value={selectedAlgo} onChange={handleAlgoSelection} disabled={status === Status.Searching}>
+      <select className={classes.algoSelector + " algo-selector"} value={selectedAlgo} onChange={handleAlgoSelection} disabled={status === Status.Searching}>
         <option value="" disabled>
           Select an algorithm
         </option>

@@ -1,11 +1,13 @@
 import React from 'react';
 import { CELL_TYPE } from '../../constants';
+import AppTour from '../AppTour'
 import classes from './header.module.scss'
 
 const Header = () => {
   return (
     <div className={classes.header}>
       <h1>Path Finder</h1>
+      <AppTour />
       <div className={classes.cellInfo}>
           {Object.keys(CELL_TYPE).map(cellType => {
             if(cellType === 'EMPTY') {
