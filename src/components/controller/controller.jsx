@@ -59,7 +59,7 @@ const Controller = () => {
 
   return (
     <section className={classes.controller}>
-      <div className={classes.controls}>
+      <div className={classes.controls + " controls"}>
         <button
           onClick={handleVisualize}
           disabled={status === Status.Searching || !selectedAlgo}

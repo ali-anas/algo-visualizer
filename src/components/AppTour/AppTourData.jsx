@@ -15,12 +15,14 @@ const stepsData = [
       </>
     ),
     target: 'body',
+    placement: 'center',
   },
   {
     content: (
       <h2>Choose an algorithm to find the path.</h2>
     ),
     target: '.algo-selector',
+    placement: 'bottom',
   },
   {
     content: (
@@ -32,7 +34,17 @@ const stepsData = [
         </video>
       </>
     ),
-    target: 'body'
+    target: 'body',
+    placement: 'center',
+  },
+  {
+    content: (
+      <>
+        <h2>Re-Run the algorithm or clear the grid</h2>
+      </>
+    ),
+    target: '.controls',
+    placement: 'bottom',
   }
 ];
 
