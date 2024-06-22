@@ -1,5 +1,5 @@
 import { CELL_TYPE } from "../constants";
-import { updateCells } from "./pathfinder.slice";
+import { setVisitedCells, updateCells } from "./pathfinder.slice";
 import { delay } from "../helpers/async";
 
 export function searchPath(algo, delayDuration) {
@@ -20,6 +20,7 @@ export function searchPath(algo, delayDuration) {
 
       visitedCells += cells.length;
       if(delayDuration) {
+        dispatch(setVisitedCells(visitedCells));
         dispatch(updateCells({ cells, cellType}))
         await delay(delayDuration);
       }
@@ -33,7 +34,7 @@ export function searchPath(algo, delayDuration) {
       updateUI: updateUI
     });
 
-    // dispatch({ setVisitedNodes})
+    dispatch(setVisitedCells(visitedCells))
     return { grid, parents };
   }
 }

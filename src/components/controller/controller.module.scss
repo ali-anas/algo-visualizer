@@ -21,3 +21,16 @@
     margin-right: 16px;
   }
 }
+
+.stats {
+  display: none;
+  @media screen and (width >= 640px) {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.statsField {
+  display: inline-block;
+  min-width: 150px
+}
