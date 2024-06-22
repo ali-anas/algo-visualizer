@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { AlgorithmsMap } from '../../lib/algorithms'
 import { useSelector, useDispatch } from 'react-redux'
-import { clearGrid, setStatus, setGrid } from '../../store/pathfinder.slice'
+import { clearGrid, setStatus, setGrid, setVisitedCells, setPathLength } from '../../store/pathfinder.slice'
 import { searchPath } from '../../store/searchPath.thunk'
 import { Status } from '../../constants'
 import { highlightPath } from '../../store/highlight.thunk'
 import classes from './controller.module.scss';
-import { Play, RefreshCcw , Trash} from 'lucide-react'
+import { Play, Trash } from 'lucide-react'
 
 
 const Controller = () => {
@@ -14,7 +14,7 @@ const Controller = () => {
   const dispatch = useDispatch();
   const pathfinder = useSelector(state => state.pathfinder);
   const status = useSelector(state => state.pathfinder.status);
-  const { source, dest } = pathfinder;
+  const { source, dest, visitedCells, pathLength } = pathfinder;
 
   async function executeSearch(algo, speed) {
     if(status === Status.Complete) {
@@ -27,6 +27,8 @@ const Controller = () => {
     }
 
     try {
+      dispatch(setPathLength(0));
+      dispatch(setVisitedCells(0))
       dispatch(setStatus(Status.Searching));
       const { parents, grid } = await dispatch(searchPath(algo, speed));
       await dispatch(highlightPath(grid, parents, speed))
@@ -46,6 +48,8 @@ const Controller = () => {
 
   async function handleClearGrid() {
     dispatch(clearGrid());
+    dispatch(setVisitedCells(0));
+    dispatch(setPathLength(0));
   }
 
   useEffect(() => {
@@ -76,6 +80,12 @@ const Controller = () => {
           data-tooltip="Clear">
           <Trash size={20} stroke={status === Status.Searching ? "#949494" : "#111111"}/>
         </button>
+      </div>
+      <div className={classes.stats}>
+        <div>
+          <span className={classes.statsField}>Visited Cells: {visitedCells}</span>{' '}
+          <span className={classes.statsField}>Path Length: {pathLength}</span>
+        </div>
       </div>
       <select className={classes.algoSelector + " algo-selector"} value={selectedAlgo} onChange={handleAlgoSelection} disabled={status === Status.Searching}>
         <option value="" disabled>

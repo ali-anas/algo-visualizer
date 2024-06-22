@@ -12,6 +12,7 @@ const initialState = {
   dest: { row: maxRows - 1, col:maxCols - 1 },
   status: Status.Ready,
   pathLength: 0,
+  visitedCells: 0,
 }
 
 export const pathfinderSlice = createSlice({
@@ -67,11 +68,16 @@ export const pathfinderSlice = createSlice({
     },
     setGrid: (state, action) => {
       state.grid = action.payload.grid;
+    },
+    setVisitedCells: (state, action) => {
+      state.visitedCells = action.payload
+    },
+    setPathLength: (state, action) => {
+      state.pathLength = action.payload
     }
-
   },
 });
 
-export const { setStatus, clearGrid, updateCells, updateSingleCell, setGrid } = pathfinderSlice.actions;
+export const { setStatus, clearGrid, updateCells, updateSingleCell, setGrid, setVisitedCells, setPathLength } = pathfinderSlice.actions;
 
 export default pathfinderSlice.reducer;
