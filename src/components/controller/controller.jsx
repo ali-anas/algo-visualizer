@@ -38,7 +38,10 @@ const Controller = () => {
   }
 
   async function handleVisualize() {
-    await executeSearch(AlgorithmsMap['bfs'].fn, 1)
+    if(!selectedAlgo) {
+      return;
+    }
+    await executeSearch(AlgorithmsMap[selectedAlgo].fn, 1)
   }
 
   async function handleClearGrid() {
@@ -47,7 +50,7 @@ const Controller = () => {
 
   useEffect(() => {
     if(status === Status.Complete) {
-      executeSearch(AlgorithmsMap['bfs'].fn, 0)
+      executeSearch(AlgorithmsMap[selectedAlgo].fn, 0)
     }
   }, [source, dest])
 

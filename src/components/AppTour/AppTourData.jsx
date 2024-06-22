@@ -27,7 +27,7 @@ const stepsData = [
   {
     content: (
       <>
-        <h2>Move the source/dest after execution of alogorithm to see the live results</h2>
+        <h2>Move the source/dest after execution of algorithm to see the live results</h2>
         <br />
         <video autoPlay loop muted>
           <source src={liveResults} type="video/mp4" />
