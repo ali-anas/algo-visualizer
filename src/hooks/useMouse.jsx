@@ -9,11 +9,15 @@ const useMouse = ({ gridRef }) => {
   const { isValidCell, selectedCell } = checkCellValid(element);
   const dispatch = useDispatch();
   const isMouseDown = useRef(false);
+  const prevCellRef = useRef(null);
+  // CELL_TYPE.SOURCE and CELL_TYPE.DEST need support for dragging.
   const draggableCellRef = useRef(null);
 
   useEffect(() => {
+    // if mouse up event is triggered, set the previously selected draggable cell to null.
     if(!isMouseDown.current) {
       draggableCellRef.current = null;
+      prevCellRef.current = null;
     }
   }, [isMouseDown.current])
 
@@ -23,33 +27,37 @@ const useMouse = ({ gridRef }) => {
     }
 
     if (draggableCellRef.current) {
+      // if selected cell is draggable and current cell is not either wall or source or destination cell already then
+      // then change current cell to the type of draggable cell
+      // i.e change position of source or destination
       if(![CELL_TYPE.SOURCE, CELL_TYPE.DEST, CELL_TYPE.WALL].includes(selectedCell.cellType)) {
         dispatch(updateSingleCell({ ...selectedCell, cellType: draggableCellRef.current.cellType }));
       }
       return;
     }
 
+    // if cell type is CELL_TYPE.SOURCE or CELL_TYPE.DEST mark it as draggable
     if ([CELL_TYPE.SOURCE, CELL_TYPE.DEST].includes(selectedCell.cellType)) {
       draggableCellRef.current = selectedCell;
       return;
     }
 
-    if(![CELL_TYPE.SOURCE, CELL_TYPE.DEST].includes(selectedCell.cellType)) {
+    // toggle the empty and wall cells
+    const sameAsPrev = prevCellRef.current?.row === selectedCell.row && prevCellRef.current?.col === selectedCell.col;
+    if(!sameAsPrev) {
       dispatch(updateSingleCell({ ...selectedCell, cellType: selectedCell.cellType === CELL_TYPE.WALL ? CELL_TYPE.EMPTY : CELL_TYPE.WALL }));
+      prevCellRef.current = selectedCell;
     }
 
   }, [selectedCell, isValidCell]);
  
-  const onMouseUp = (e) => {
-    e.stopPropagation();
+  const onMouseUp = () => {
     isMouseDown.current = false;
     setElement(null);
   }
 
   // onMouseDown
   const onMouseDown = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
     if(e.target) {
       setElement(e.target);
       isMouseDown.current = true;
@@ -57,9 +65,6 @@ const useMouse = ({ gridRef }) => {
   }
 
   const onMouseMove = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
     if(isMouseDown.current) {
       setElement(e.target);
     }
