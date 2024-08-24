@@ -68,4 +68,6 @@ export async function BFS({ grid: originalGrid, startNode, endNode, updateUI }) 
       }
     }
   }
+
+  return { grid, parents: null };
 }

@@ -1,4 +1,4 @@
-import { CELL_TYPE } from "../constants";
+import { CELL_TYPE, Status } from "../constants";
 import { setVisitedCells, updateCells } from "./pathfinder.slice";
 import { delay } from "../helpers/async";
 
@@ -6,10 +6,17 @@ export function searchPath(algo, delayDuration) {
   return async (dispatch, getState) => {
     let visitedCells = 0;
 
+    function isSearching() {
+      return getState().pathfinder.status === Status.Searching;
+    }
+
     /*
     * @param val - processed node
     */
     async function updateUI(grid, cells, cellType) {
+      if(!isSearching()) {
+        throw new Error("Path search cancelled!");
+      }
       if(!Array.isArray(cells)) {
         cells = [cells];
       }
