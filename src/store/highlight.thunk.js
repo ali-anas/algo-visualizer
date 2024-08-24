@@ -1,6 +1,7 @@
 import { setPathLength, updateSingleCell } from "./pathfinder.slice";
 import { delay } from "../helpers/async";
 import { tracePath } from "./trace.thunk";
+import { toast } from "sonner";
 
 export function highlightPath(grid, parents, delayDuration) {
   return async function(dispatch, getState) {
@@ -19,6 +20,7 @@ export function highlightPath(grid, parents, delayDuration) {
     const state = getState().pathfinder;
     // highlight the final path
     if(parents) {
+      toast.success("Path found!!!");
       const pathLength = await tracePath({
         parents,
         sourceNode: state.source,
@@ -27,7 +29,7 @@ export function highlightPath(grid, parents, delayDuration) {
       })
       dispatch(setPathLength(pathLength));
     } else {
-      console.log("path not found");
+      toast.error("Path not found");
     }
   }
 }
