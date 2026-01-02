@@ -7,6 +7,7 @@ import { Status } from '../../constants'
 import { highlightPath } from '../../store/highlight.thunk'
 import classes from './controller.module.scss';
 import { Play, Trash } from 'lucide-react'
+import { clearGridData } from '../../helpers/pathfinder'
 
 
 const Controller = () => {
@@ -17,12 +18,21 @@ const Controller = () => {
   const { source, dest, visitedCells, pathLength } = pathfinder;
 
   async function executeSearch(algo, speed) {
-    if(status === Status.Complete) {
+    if (speed === 0) {
+      // Optimized path for drag and drop
+      const cleanedGrid = clearGridData(pathfinder.grid);
+      const { parents, grid } = await dispatch(searchPath(algo, speed, cleanedGrid));
+      await dispatch(highlightPath(grid, parents, speed));
+      dispatch(setGrid({ grid }));
+      return;
+    }
+
+    if (status === Status.Complete) {
       // clear the previous grid
       dispatch(clearGrid());
     }
 
-    if(!algo) {
+    if (!algo) {
       return;
     }
 
@@ -34,13 +44,14 @@ const Controller = () => {
       await dispatch(highlightPath(grid, parents, speed))
       dispatch(setGrid({ grid }))
       dispatch(setStatus(Status.Complete))
-    } catch(err) {
-      // search is cancelled
+    } catch (err) {
+      console.error("Search failed or cancelled:", err);
+      dispatch(setStatus(Status.Complete));
     }
   }
 
   async function handleVisualize() {
-    if(!selectedAlgo) {
+    if (!selectedAlgo) {
       return;
     }
     await executeSearch(AlgorithmsMap[selectedAlgo].fn, 1)
@@ -53,7 +64,7 @@ const Controller = () => {
   }
 
   useEffect(() => {
-    if(status === Status.Complete) {
+    if (status === Status.Complete) {
       executeSearch(AlgorithmsMap[selectedAlgo].fn, 0)
     }
   }, [source, dest])
@@ -72,13 +83,13 @@ const Controller = () => {
           disabled={status === Status.Searching || !selectedAlgo}
           data-tooltip="Play"
         >
-          <Play size={20} stroke={status === Status.Searching || !selectedAlgo ? "#949494" : "#111111"}/>
+          <Play size={20} stroke={status === Status.Searching || !selectedAlgo ? "#949494" : "#111111"} />
         </button>
         <button
           onClick={handleClearGrid}
           disabled={status === Status.Searching}
           data-tooltip="Clear">
-          <Trash size={20} stroke={status === Status.Searching ? "#949494" : "#111111"}/>
+          <Trash size={20} stroke={status === Status.Searching ? "#949494" : "#111111"} />
         </button>
       </div>
       <div className={classes.stats}>
