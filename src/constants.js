@@ -5,6 +5,12 @@ export const CELL_TYPE = {
   EMPTY: 0,
   VISITED: 4,
   PATH: 5,
+  PATH_H: 6,
+  PATH_V: 7,
+  PATH_TL: 8,
+  PATH_TR: 9,
+  PATH_BL: 10,
+  PATH_BR: 11,
 }
 
 

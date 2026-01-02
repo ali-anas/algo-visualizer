@@ -1,66 +1,69 @@
 import { CELL_TYPE } from "../../../constants";
+import { generateGrid } from "../../../helpers/pathfinder";
 
-export function Dijkstra(grid, startNode, finishNode) {
-  const visitedNodeInOrder = [];
-  startNode.distance = 0;
-  const unvisitedNodes = getAllNodes(grid);
-  console.log('[D]', 'unvisited nodes', unvisitedNodes);
-  while(!!unvisitedNodes.length) {
-      sortNodesByDistance(unvisitedNodes);
-      const closestNode = unvisitedNodes.shift();
-      console.log("[D]" + "x: " + closestNode.row + " y: " + closestNode.col + " isWall " + closestNode.isWall + "\n");
-      // Handle Walls
-      if (closestNode.isWall) continue;
-      // handle impossible
-      if (closestNode.distance === Infinity) return visitedNodeInOrder;
-      closestNode.isVisited = true;
-      visitedNodeInOrder.push(closestNode);
-      if(closestNode === finishNode) return visitedNodeInOrder;
-      updateNeighbors(grid, closestNode);
+function sortNodesByDistance(unvisitedNodes, distances) {
+  unvisitedNodes.sort((nodeA, nodeB) => distances[nodeA.row][nodeA.col] - distances[nodeB.row][nodeB.col]);
+}
+
+export async function Dijkstra({ grid: originalGrid, startNode, endNode, updateUI }) {
+  const grid = originalGrid.map(row => row.slice());
+  const rows = grid.length;
+  const cols = grid[0].length;
+
+  const distances = generateGrid(rows, cols, Infinity);
+  const parents = generateGrid(rows, cols, null);
+  const visited = generateGrid(rows, cols, false);
+
+  distances[startNode.row][startNode.col] = 0;
+
+  const unvisitedNodes = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      unvisitedNodes.push({ row: r, col: c });
+    }
   }
-}
 
-function sortNodesByDistance(unvisitedNodes) {
-  unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-}
+  while (unvisitedNodes.length) {
+    sortNodesByDistance(unvisitedNodes, distances);
+    const closestNode = unvisitedNodes.shift();
 
-function updateNeighbors(grid, node) {
-  const neighbors = getUnvisitedNeighbors(grid, node);
-  // console.log("neighbor: ",neighbors);
-  for(const neighbor of neighbors) {
-      neighbor.distance = neighbor.isWall ? Infinity : node.distance + 1;
-      neighbor.previousNode = node;
-  }
-}
+    // If wall, skip
+    // Note: In this project's grid, walls are represented by integer 3 (CELL_TYPE.WALL)
+    // We need to check if the node is valid to traverse.
+    // However, if we just blindly iterate unvisited, we might pick walls.
+    // Walls should functionally have distance Infinity, so they naturally fall to the end of the sorted list if we don't relax them.
+    // But better to check.
+    if (grid[closestNode.row][closestNode.col] === CELL_TYPE.WALL) continue;
 
-function getUnvisitedNeighbors(table, node) {
-  const neighbors = [];
-  const {row, col} = node;
+    // If shortest distance is infinity, we are trapped
+    if (distances[closestNode.row][closestNode.col] === Infinity) return { parents: null, grid };
 
-  if(row > 0) neighbors.push(table[row-1][col]);
-  if(row < table.length-1) neighbors.push(table[row+1][col]);
-  if(col > 0) neighbors.push(table[row][col-1]);
-  if(col < table[0].length-1) neighbors.push(table[row][col+1]);
+    visited[closestNode.row][closestNode.col] = true;
 
-  return neighbors.filter(neighbor => !neighbor.isVisited && !neighbor.isWall);
-}
+    // Visualize visited
+    if (grid[closestNode.row][closestNode.col] === CELL_TYPE.EMPTY && !(closestNode.row === startNode.row && closestNode.col === startNode.col)) {
+      await updateUI(grid, closestNode, CELL_TYPE.VISITED);
+    }
 
-function getAllNodes(grid) {
-  const nodes = [];
-  for(const row of grid) {
-      for(const node of row) {
-          if(node !== CELL_TYPE.WALL) nodes.push(node);
+    if (closestNode.row === endNode.row && closestNode.col === endNode.col) return { parents, grid };
+
+    const neighbors = [];
+    const { row, col } = closestNode;
+    if (row > 0) neighbors.push({ row: row - 1, col });
+    if (row < rows - 1) neighbors.push({ row: row + 1, col });
+    if (col > 0) neighbors.push({ row, col: col - 1 });
+    if (col < cols - 1) neighbors.push({ row, col: col + 1 });
+
+    for (const neighbor of neighbors) {
+      if (visited[neighbor.row][neighbor.col]) continue;
+
+      const newDistance = distances[closestNode.row][closestNode.col] + 1;
+      if (newDistance < distances[neighbor.row][neighbor.col]) {
+        distances[neighbor.row][neighbor.col] = newDistance;
+        parents[neighbor.row][neighbor.col] = closestNode;
       }
+    }
   }
-  return nodes;
-}
 
-export function getNodeInShortestPathOrder(finishNode) {
-  const nodesInShortestPathOrder = [];
-  let currNode = finishNode;
-  while(currNode !== null) {
-      nodesInShortestPathOrder.unshift(currNode);
-      currNode = currNode.previousNode;
-  }
-  return nodesInShortestPathOrder;
-};
+  return { parents: null, grid };
+}

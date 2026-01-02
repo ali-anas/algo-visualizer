@@ -40,6 +40,7 @@
     background-color: yellow;
     border-color: yellow;
   }
+
   .type-5::after {
     content: "";
     height: 10px;
@@ -49,8 +50,138 @@
     display: block;
   }
 
+  // Common style for path pseudo elements
+  %path-common {
+    content: "";
+    display: block;
+    background-color: transparent;
+    border: 4px solid rgb(30, 30, 30);
+    position: absolute;
+  }
+
+  // Horizontal
+  .type-6 {
+    background-color: yellow;
+    border-color: yellow;
+    position: relative;
+
+    &::after {
+      content: "";
+      height: 4px;
+      width: 100%;
+      background-color: rgb(30, 30, 30);
+      display: block;
+      position: absolute;
+      top: calc(50% - 2px);
+    }
+  }
+
+  // Vertical
+  .type-7 {
+    background-color: yellow;
+    border-color: yellow;
+    position: relative;
+
+    &::after {
+      content: "";
+      width: 4px;
+      height: 100%;
+      background-color: rgb(30, 30, 30);
+      display: block;
+      position: absolute;
+      left: calc(50% - 2px);
+    }
+  }
+
+  // Top-Left Corner: Connects Top and Left
+  // Box in Bottom-Right quadrant of the 2x2 grid centered on Top-Left of this cell?
+  // We use the "offset box" technique.
+  // Box at -50%, -50%, width 100%, height 100%. Center is Top-Left corner of cell.
+  // Borders: Right and Bottom. Radius: Bottom-Right.
+  .type-8 {
+    background-color: yellow;
+    border-color: yellow;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      @extend %path-common;
+      top: -42%;
+      left: -42%;
+      width: 100%;
+      height: 100%;
+      border-color: transparent rgb(30, 30, 30) rgb(30, 30, 30) transparent;
+      border-radius: 0 0 50% 0;
+    }
+  }
+
+  // Top-Right Corner: Connects Top and Right
+  // Box at 50%, -50% (Top-Right quadrant).
+  // Borders: Left and Bottom. Radius: Bottom-Left.
+  .type-9 {
+    background-color: yellow;
+    border-color: yellow;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      @extend %path-common;
+      top: -42%;
+      left: 42%;
+      width: 100%;
+      height: 100%;
+      border-color: transparent transparent rgb(30, 30, 30) rgb(30, 30, 30);
+      border-radius: 0 0 0 50%;
+    }
+  }
+
+  // Bottom-Left Corner: Connects Bottom and Left
+  // Box at -50%, 50% (Bottom-Left quadrant).
+  // Borders: Top and Right. Radius: Top-Right.
+  .type-10 {
+    background-color: yellow;
+    border-color: yellow;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      @extend %path-common;
+      top: 42%;
+      left: -42%;
+      width: 100%;
+      height: 100%;
+      border-color: rgb(30, 30, 30) rgb(30, 30, 30) transparent transparent;
+      border-radius: 0 50% 0 0;
+    }
+  }
+
+  // Bottom-Right Corner: Connects Bottom and Right
+  // Box at 50%, 50% (Bottom-Right quadrant).
+  // Borders: Top and Left. Radius: Top-Left.
+  .type-11 {
+    background-color: yellow;
+    border-color: yellow;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      @extend %path-common;
+      top: 42%;
+      left: 42%;
+      width: 100%;
+      height: 100%;
+      border-color: rgb(30, 30, 30) transparent transparent rgb(30, 30, 30);
+      border-radius: 50% 0 0 0;
+    }
+  }
+
+
   button {
     border: 0.5px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
   }
 
   @keyframes visitedAnimation {
@@ -59,15 +190,15 @@
       background-color: rgba(0, 0, 66, 0.75);
       border-radius: 100%;
     }
-  
+
     50% {
       background-color: rgba(17, 104, 217, 0.75);
     }
-  
+
     75% {
       background-color: rgba(0, 217, 159, 0.75);
     }
-  
+
     100% {
       transform: scale(1);
       background-color: var(--visited);

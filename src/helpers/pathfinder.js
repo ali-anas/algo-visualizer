@@ -17,13 +17,13 @@ export const generateGrid = (rows, cols, val) => {
 export const initGrid = (rows, cols) => {
   const grid = generateGrid(rows, cols, CELL_TYPE.EMPTY);
   grid[0][0] = CELL_TYPE.SOURCE;
-  grid[rows-1][cols-1] = CELL_TYPE.DEST;
+  grid[rows - 1][cols - 1] = CELL_TYPE.DEST;
   return grid;
 }
 
 
-export const checkCellValid = (element)  => {
-  if(!element || element.tagName !== 'BUTTON') {
+export const checkCellValid = (element) => {
+  if (!element || element.tagName !== 'BUTTON') {
     return { isValidCell: false };
   }
 
@@ -38,4 +38,17 @@ export const checkCellValid = (element)  => {
     isValidCell: true,
     selectedCell: { row, col, cellType },
   };
+}
+
+export const clearGridData = (grid) => {
+  const clonedGrid = grid.map(row => row.slice());
+  for (const row of clonedGrid) {
+    for (let j = 0; j < row.length; j++) {
+      const cell = row[j];
+      if (cell === CELL_TYPE.VISITED || cell >= CELL_TYPE.PATH) {
+        row[j] = CELL_TYPE.EMPTY;
+      }
+    }
+  }
+  return clonedGrid;
 }
