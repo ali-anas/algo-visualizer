@@ -65,7 +65,10 @@ const Controller = () => {
 
   useEffect(() => {
     if (status === Status.Complete) {
-      executeSearch(AlgorithmsMap[selectedAlgo].fn, 0)
+      const handler = setTimeout(() => {
+        executeSearch(AlgorithmsMap[selectedAlgo].fn, 0)
+      }, 50); // Small debounce for drag
+      return () => clearTimeout(handler);
     }
   }, [source, dest])
 
