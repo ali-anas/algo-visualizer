@@ -38,6 +38,15 @@ export const pathfinderSlice = createSlice({
       state.grid = clonedGrid;
       state.status = Status.Ready;
     },
+    resetGrid: (state) => {
+      const { rows, cols } = state;
+      state.grid = initGrid(rows, cols);
+      state.source = { row: 0, col: 0 };
+      state.dest = { row: rows - 1, col: cols - 1 };
+      state.status = Status.Ready;
+      state.pathLength = 0;
+      state.visitedCells = 0;
+    },
     updateCells: (state, action) => {
 
       const { cells, cellType } = action.payload;
@@ -78,6 +87,6 @@ export const pathfinderSlice = createSlice({
   },
 });
 
-export const { setStatus, clearGrid, updateCells, updateSingleCell, setGrid, setVisitedCells, setPathLength } = pathfinderSlice.actions;
+export const { setStatus, clearGrid, resetGrid, updateCells, updateSingleCell, setGrid, setVisitedCells, setPathLength } = pathfinderSlice.actions;
 
 export default pathfinderSlice.reducer;
