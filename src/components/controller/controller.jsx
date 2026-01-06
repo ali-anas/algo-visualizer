@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { AlgorithmsMap } from '../../lib/algorithms'
 import { useSelector, useDispatch } from 'react-redux'
-import { clearGrid, setStatus, setGrid, setVisitedCells, setPathLength } from '../../store/pathfinder.slice'
+import { clearGrid, resetGrid, setStatus, setGrid, setVisitedCells, setPathLength } from '../../store/pathfinder.slice'
 import { searchPath } from '../../store/searchPath.thunk'
 import { Status } from '../../constants'
 import { highlightPath } from '../../store/highlight.thunk'
 import classes from './controller.module.scss';
-import { Play, Trash } from 'lucide-react'
+import { Play, Trash, RotateCcw } from 'lucide-react'
 import { clearGridData } from '../../helpers/pathfinder'
 
 
@@ -93,6 +93,12 @@ const Controller = () => {
           disabled={status === Status.Searching}
           data-tooltip="Clear">
           <Trash size={20} stroke={status === Status.Searching ? "#949494" : "#111111"} />
+        </button>
+        <button
+          onClick={() => dispatch(resetGrid())}
+          disabled={status === Status.Searching}
+          data-tooltip="Reset">
+          <RotateCcw size={20} stroke={status === Status.Searching ? "#949494" : "#111111"} />
         </button>
       </div>
       <div className={classes.stats}>
